@@ -1,0 +1,180 @@
+openapi: 3.1.0
+info:
+  title: Live (WebSocket) transcriptionApi API
+  version: 1.0.0
+tags:
+- name: transcriptionApi
+paths:
+  /v1/transcription_jobs:
+    post:
+      operationId: submit-transcription-job-v-1-transcription-jobs-post
+      summary: Submit an audio file for asynchronous transcription.
+      tags:
+      - transcriptionApi
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobIDResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Audio file (MP3/WAV/MP4/WebM/etc.).
+                language:
+                  type:
+                  - string
+                  - 'null'
+                  description: 'Target language (ISO-639-1). Supported: en, ja, ko, zh. Defaults to ''ja''.'
+                with_timestamps:
+                  type: boolean
+                  default: false
+                  description: Include per-segment timestamps in the GET response. Adds tokenizer + silero-VAD work; disabled by default for the lighter text-only path.
+              required:
+              - file
+  /v1/transcription_jobs/{job_id}:
+    get:
+      operationId: get-transcription-job-v-1-transcription-jobs-job-id-get
+      summary: Fetch the transcription result for a completed job.
+      tags:
+      - transcriptionApi
+      parameters:
+      - name: job_id
+        in: path
+        description: The job ID returned from POST.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transcription API_get_transcription_job_v1_transcription_jobs__job_id__get_Response_200'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    Transcription API_get_transcription_job_v1_transcription_jobs__job_id__get_Response_200:
+      oneOf:
+      - type: object
+        properties:
+          state:
+            type: string
+            enum:
+            - done
+            description: 'Discriminator value: done'
+          transcription:
+            type: string
+            description: The final transcription text.
+          segments:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/Segment'
+            description: Per-chunk timestamps aligned to the 80ms inference grid and refined with silero-VAD. Present only when the POST request set with_timestamps=true.
+        required:
+        - state
+        - transcription
+        description: DoneResponse variant
+      - type: object
+        properties:
+          state:
+            type: string
+            enum:
+            - error
+            description: 'Discriminator value: error'
+          error_message:
+            type: string
+            description: Details about the error.
+        required:
+        - state
+        - error_message
+        description: ErrorResponse variant
+      discriminator:
+        propertyName: state
+      title: Transcription API_get_transcription_job_v1_transcription_jobs__job_id__get_Response_200
+    Segment:
+      type: object
+      properties:
+        text:
+          type: string
+        start:
+          type: number
+          format: double
+          description: Segment start time in seconds.
+        end:
+          type: number
+          format: double
+          description: Segment end time in seconds.
+      required:
+      - text
+      - start
+      - end
+      title: Segment
+    ValidationErrorLocItems:
+      oneOf:
+      - type: string
+      - type: integer
+      title: ValidationErrorLocItems
+    ValidationError:
+      type: object
+      properties:
+        loc:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationErrorLocItems'
+        msg:
+          type: string
+        type:
+          type: string
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    JobIDResponse:
+      type: object
+      properties:
+        job_id:
+          type: string
+          description: The unique ID of the created job
+      required:
+      - job_id
+      title: JobIDResponse
+    HTTPValidationError:
+      type: object
+      properties:
+        detail:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      title: HTTPValidationError
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'HTTP Bearer authentication. Pass the Kotoba API key as a Bearer
+
+        token via the Authorization header. Server-side use only.
+
+        '
