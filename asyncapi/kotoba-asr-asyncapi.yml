@@ -1,0 +1,400 @@
+asyncapi: 2.6.0
+info:
+  title: Live (WebSocket)
+  version: 1.0.0
+channels:
+  /v1/realtime:
+    description: |
+      Real-time speech-to-text transcription channel.
+    publish:
+      operationId: asr-publish
+      summary: Server messages
+      message:
+        oneOf:
+          - $ref: '#/components/messages/subpackage_asr.asr-server-0-serverReceiveEvents'
+          - $ref: '#/components/messages/subpackage_asr.asr-server-1-serverReceiveEvents'
+          - $ref: '#/components/messages/subpackage_asr.asr-server-2-serverReceiveEvents'
+          - $ref: '#/components/messages/subpackage_asr.asr-server-3-serverReceiveEvents'
+          - $ref: '#/components/messages/subpackage_asr.asr-server-4-serverReceiveEvents'
+          - $ref: '#/components/messages/subpackage_asr.asr-server-5-serverReceiveEvents'
+          - $ref: '#/components/messages/subpackage_asr.asr-server-6-serverReceiveEvents'
+    subscribe:
+      operationId: asr-subscribe
+      summary: Client messages
+      message:
+        oneOf:
+          - $ref: '#/components/messages/subpackage_asr.asr-client-0-clientSendSessionUpdate'
+          - $ref: '#/components/messages/subpackage_asr.asr-client-1-clientSendAudio'
+          - $ref: '#/components/messages/subpackage_asr.asr-client-2-clientCommitAudio'
+servers:
+  production:
+    url: wss://api.kotobatech.ai/
+    protocol: wss
+    x-default: true
+components:
+  messages:
+    subpackage_asr.asr-server-0-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session lifecycle events, transcription deltas, completed
+        transcripts, commit notifications, and errors.
+      payload:
+        $ref: '#/components/schemas/asr_transcriptionSessionCreated'
+    subpackage_asr.asr-server-1-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session lifecycle events, transcription deltas, completed
+        transcripts, commit notifications, and errors.
+      payload:
+        $ref: '#/components/schemas/asr_transcriptionSessionUpdated'
+    subpackage_asr.asr-server-2-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session lifecycle events, transcription deltas, completed
+        transcripts, commit notifications, and errors.
+      payload:
+        $ref: '#/components/schemas/asr_conversationItemCreated'
+    subpackage_asr.asr-server-3-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session lifecycle events, transcription deltas, completed
+        transcripts, commit notifications, and errors.
+      payload:
+        $ref: '#/components/schemas/asr_transcriptionDelta'
+    subpackage_asr.asr-server-4-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session lifecycle events, transcription deltas, completed
+        transcripts, commit notifications, and errors.
+      payload:
+        $ref: '#/components/schemas/asr_transcriptionCompleted'
+    subpackage_asr.asr-server-5-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session lifecycle events, transcription deltas, completed
+        transcripts, commit notifications, and errors.
+      payload:
+        $ref: '#/components/schemas/asr_inputAudioBufferCommitted'
+    subpackage_asr.asr-server-6-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session lifecycle events, transcription deltas, completed
+        transcripts, commit notifications, and errors.
+      payload:
+        $ref: '#/components/schemas/asr_error'
+    subpackage_asr.asr-client-0-clientSendSessionUpdate:
+      name: clientSendSessionUpdate
+      title: clientSendSessionUpdate
+      description: |
+        Must be sent exactly once after receiving `transcription_session.created`
+        and before sending audio. Sets the input audio format, sampling rate,
+        and transcription language.
+      payload:
+        $ref: '#/components/schemas/asr_transcriptionSessionUpdate'
+    subpackage_asr.asr-client-1-clientSendAudio:
+      name: clientSendAudio
+      title: clientSendAudio
+      description: |
+        Sends a Base64-encoded audio chunk as a JSON frame.
+      payload:
+        $ref: '#/components/schemas/asr_inputAudioBufferAppend'
+    subpackage_asr.asr-client-2-clientCommitAudio:
+      name: clientCommitAudio
+      title: clientCommitAudio
+      description: |
+        Sent when ending audio transmission. The server processes remaining
+        audio and emits a final
+        `conversation.item.input_audio_transcription.completed`.
+      payload:
+        $ref: '#/components/schemas/asr_inputAudioBufferCommit'
+  schemas:
+    ChannelsAsrMessagesTranscriptionSessionCreatedType:
+      type: string
+      enum:
+        - transcription_session.created
+      title: ChannelsAsrMessagesTranscriptionSessionCreatedType
+    asr_transcriptionSessionCreated:
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: Server-side unique ID for identifying the event
+        type:
+          $ref: '#/components/schemas/ChannelsAsrMessagesTranscriptionSessionCreatedType'
+      required:
+        - event_id
+        - type
+      description: |
+        ASR session creation completion message. Emitted by the server
+        immediately after the WebSocket handshake succeeds.
+      title: asr_transcriptionSessionCreated
+    ChannelsAsrMessagesTranscriptionSessionUpdatedType:
+      type: string
+      enum:
+        - transcription_session.updated
+      title: ChannelsAsrMessagesTranscriptionSessionUpdatedType
+    InputAudioFormat:
+      type: string
+      enum:
+        - pcm16
+        - float32
+        - twilio
+        - ogg/opus
+      default: pcm16
+      description: Input audio data format
+      title: InputAudioFormat
+    TranscriptionSessionInputAudioTranscription:
+      type: object
+      properties:
+        language:
+          type: string
+          description: |
+            Input audio language (ISO-639-1). Supported: `en`, `ja`,
+            `ko`, `zh`. Optional, but specifying it may improve
+            transcription accuracy or latency.
+        target_language:
+          type: string
+          description: |
+            Language of the output transcription (ISO-639-1). For plain ASR,
+            typically equal to `language`.
+      description: Settings for audio data transcription
+      title: TranscriptionSessionInputAudioTranscription
+    TranscriptionSessionObject:
+      type: string
+      enum:
+        - realtime.transcription_session
+      default: realtime.transcription_session
+      description: Fixed value
+      title: TranscriptionSessionObject
+    TranscriptionSession:
+      type: object
+      properties:
+        input_audio_format:
+          $ref: '#/components/schemas/InputAudioFormat'
+          default: pcm16
+        input_audio_sample_rate:
+          type: integer
+          default: 24000
+          description: Input audio sampling rate (Hz)
+        input_audio_number_of_channels:
+          type: integer
+          default: 1
+          description: Number of input audio channels
+        input_audio_transcription:
+          $ref: '#/components/schemas/TranscriptionSessionInputAudioTranscription'
+        object:
+          $ref: '#/components/schemas/TranscriptionSessionObject'
+          description: Fixed value
+      required:
+        - input_audio_transcription
+        - object
+      description: ASR session settings
+      title: TranscriptionSession
+    asr_transcriptionSessionUpdated:
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: Server-side unique ID for identifying the event
+        type:
+          $ref: '#/components/schemas/ChannelsAsrMessagesTranscriptionSessionUpdatedType'
+        session:
+          $ref: '#/components/schemas/TranscriptionSession'
+      required:
+        - event_id
+        - type
+        - session
+      description: ASR session configuration completion message
+      title: asr_transcriptionSessionUpdated
+    ChannelsAsrMessagesConversationItemCreatedType:
+      type: string
+      enum:
+        - conversation.item.created
+      title: ChannelsAsrMessagesConversationItemCreatedType
+    asr_conversationItemCreated:
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: Unique ID issued by the server
+        type:
+          $ref: '#/components/schemas/ChannelsAsrMessagesConversationItemCreatedType'
+      required:
+        - event_id
+        - type
+      description: Conversation item creation notification message
+      title: asr_conversationItemCreated
+    ChannelsAsrMessagesTranscriptionDeltaType:
+      type: string
+      enum:
+        - conversation.item.input_audio_transcription.delta
+      title: ChannelsAsrMessagesTranscriptionDeltaType
+    asr_transcriptionDelta:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsAsrMessagesTranscriptionDeltaType'
+        item_id:
+          type: string
+          description: Identifier corresponding to the event_id specified in input_audio_buffer.append
+        delta:
+          type: string
+          description: A portion of the transcription result
+      required:
+        - type
+        - delta
+      description: Partial transcription text result message
+      title: asr_transcriptionDelta
+    ChannelsAsrMessagesTranscriptionCompletedType:
+      type: string
+      enum:
+        - conversation.item.input_audio_transcription.completed
+      title: ChannelsAsrMessagesTranscriptionCompletedType
+    asr_transcriptionCompleted:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsAsrMessagesTranscriptionCompletedType'
+        item_id:
+          type: string
+          description: Identifier corresponding to the event_id specified in input_audio_buffer.append
+        transcript:
+          type: string
+          description: Full transcription text
+      required:
+        - type
+        - transcript
+      description: |
+        Final transcription text result message. Emitted after
+        `input_audio_buffer.commit` once the server finishes processing
+        the buffer.
+      title: asr_transcriptionCompleted
+    ChannelsAsrMessagesInputAudioBufferCommittedType:
+      type: string
+      enum:
+        - input_audio_buffer.committed
+      title: ChannelsAsrMessagesInputAudioBufferCommittedType
+    asr_inputAudioBufferCommitted:
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: Server-side unique ID for identifying the event
+        type:
+          $ref: '#/components/schemas/ChannelsAsrMessagesInputAudioBufferCommittedType'
+      required:
+        - event_id
+        - type
+      description: Server-side audio processing completion notification message
+      title: asr_inputAudioBufferCommitted
+    ChannelsAsrMessagesErrorType:
+      type: string
+      enum:
+        - error
+      title: ChannelsAsrMessagesErrorType
+    asr_error:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsAsrMessagesErrorType'
+        error:
+          type: string
+          description: Error message
+      required:
+        - type
+        - error
+      description: Error event message
+      title: asr_error
+    ChannelsAsrMessagesTranscriptionSessionUpdateType:
+      type: string
+      enum:
+        - transcription_session.update
+      description: Fixed value
+      title: ChannelsAsrMessagesTranscriptionSessionUpdateType
+    TranscriptionSessionRequest:
+      type: object
+      properties:
+        input_audio_format:
+          $ref: '#/components/schemas/InputAudioFormat'
+          default: pcm16
+        input_audio_sample_rate:
+          type: integer
+          default: 24000
+          description: Input audio sampling rate (Hz)
+        input_audio_number_of_channels:
+          type: integer
+          default: 1
+          description: Number of input audio channels
+        input_audio_transcription:
+          $ref: '#/components/schemas/TranscriptionSessionInputAudioTranscription'
+      required:
+        - input_audio_transcription
+      description: ASR session settings
+      title: TranscriptionSessionRequest
+    asr_transcriptionSessionUpdate:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsAsrMessagesTranscriptionSessionUpdateType'
+          description: Fixed value
+        session:
+          $ref: '#/components/schemas/TranscriptionSessionRequest'
+      required:
+        - type
+        - session
+      description: ASR session configuration message
+      title: asr_transcriptionSessionUpdate
+    ChannelsAsrMessagesInputAudioBufferAppendType:
+      type: string
+      enum:
+        - input_audio_buffer.append
+      description: Fixed value
+      title: ChannelsAsrMessagesInputAudioBufferAppendType
+    asr_inputAudioBufferAppend:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsAsrMessagesInputAudioBufferAppendType'
+          description: Fixed value
+        event_id:
+          type: string
+          description: |
+            An arbitrary string (unique recommended) used to associate with
+            the transcription result. If specified, this value is returned
+            in the response's item_id.
+        audio:
+          type: string
+          format: byte
+          description: |
+            The audio binary Base64-encoded. Must conform to the
+            input_audio_format and input_audio_sample_rate specified in
+            transcription_session.update. Up to 1 MiB (about 10 seconds)
+            can be sent at once.
+      required:
+        - type
+        - audio
+      description: Audio data send message
+      title: asr_inputAudioBufferAppend
+    ChannelsAsrMessagesInputAudioBufferCommitType:
+      type: string
+      enum:
+        - input_audio_buffer.commit
+      description: Fixed value
+      title: ChannelsAsrMessagesInputAudioBufferCommitType
+    asr_inputAudioBufferCommit:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsAsrMessagesInputAudioBufferCommitType'
+          description: Fixed value
+      required:
+        - type
+      description: Audio send completion notification message
+      title: asr_inputAudioBufferCommit

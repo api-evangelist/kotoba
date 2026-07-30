@@ -1,0 +1,114 @@
+generated: '2026-07-19'
+method: derived
+source: >-
+  openapi/kotoba-transcription-openapi-original.yml, asyncapi/kotoba-asr-asyncapi.yml,
+  asyncapi/kotoba-sts-asyncapi.yml, asyncapi/kotoba-tts-asyncapi.yml
+format: custom
+notes: >-
+  Kotoba does NOT use RFC 9457 problem+json. Two distinct error envelopes exist:
+  (1) the batch REST transcription API returns a FastAPI-style
+  `HTTPValidationError` on 422, and encodes terminal job failure in a 200 body
+  via a `state` discriminator rather than an HTTP status; (2) each realtime
+  WebSocket channel emits a bespoke `error` event frame. Kotoba publishes no
+  enumerated error-code registry, so no `errors/kotoba-error-codes.yml` sibling
+  is asserted — the TTS `code` field is a free-form string in the spec.
+envelopes:
+- name: HTTPValidationError
+  transport: rest
+  media_type: application/json
+  shape:
+    detail:
+      - {loc: [string|integer], msg: string, type: string}
+  source: openapi/kotoba-transcription-openapi-original.yml#/components/schemas/HTTPValidationError
+- name: job-state-discriminator
+  transport: rest
+  media_type: application/json
+  description: >-
+    GET /v1/transcription_jobs/{job_id} returns HTTP 200 for both success and
+    failure; callers MUST branch on the `state` discriminator rather than on the
+    status code.
+  discriminator: state
+  variants: [done, error]
+  error_shape: {state: error, error_message: string}
+  source: openapi/kotoba-transcription-openapi-original.yml
+- name: realtime-error-event
+  transport: websocket
+  description: Error frame emitted on the ASR and STS channels.
+  shape: {type: error, error: string}
+  source: asyncapi/kotoba-asr-asyncapi.yml#/components/schemas/asr_error
+- name: tts-error-event
+  transport: websocket
+  description: Fatal server-side error frame on the TTS channel; adds an optional `code`.
+  shape: {type: error, message: string, code: string}
+  source: asyncapi/kotoba-tts-asyncapi.yml#/components/schemas/tts_error
+problems:
+- status: 422
+  name: validation_error
+  title: Validation Error
+  envelope: HTTPValidationError
+  description: >-
+    Request body or path parameter failed validation. `detail[].loc` locates the
+    offending field, `detail[].msg` is the human message, `detail[].type` is the
+    validator that failed.
+  remediation: >-
+    Correct the named field. For POST /v1/transcription_jobs the `file` part is
+    required and `language` must be one of en, ja, ko, zh.
+  source_operations:
+  - openapi/kotoba-transcription-openapi-original.yml#submit-transcription-job-v-1-transcription-jobs-post
+  - openapi/kotoba-transcription-openapi-original.yml#get-transcription-job-v-1-transcription-jobs-job-id-get
+- status: 200
+  name: job_failed
+  title: Transcription job failed
+  envelope: job-state-discriminator
+  description: >-
+    Returned with `state: error` and an `error_message` when the asynchronous
+    transcription job terminated in failure. Not signalled by an HTTP error code.
+  remediation: Inspect `error_message`; resubmit the file if the cause is transient.
+  source_operations:
+  - openapi/kotoba-transcription-openapi-original.yml#get-transcription-job-v-1-transcription-jobs-job-id-get
+- transport: websocket
+  channel: /v1/realtime
+  name: asr_error
+  title: ASR session error
+  envelope: realtime-error-event
+  description: Error event message on the speech-to-text streaming channel.
+  fatal: true
+  source_operations: [asyncapi/kotoba-asr-asyncapi.yml#asr-publish]
+- transport: websocket
+  channel: /sts
+  name: sts_error
+  title: STS session error
+  envelope: realtime-error-event
+  description: Error event message on the speech-to-speech translation channel.
+  fatal: true
+  source_operations: [asyncapi/kotoba-sts-asyncapi.yml#sts-publish]
+- transport: websocket
+  channel: /v2/tts/ws
+  name: tts_error
+  title: TTS fatal error
+  envelope: tts-error-event
+  description: Fatal server-side error on the text-to-speech channel.
+  fatal: true
+  source_operations: [asyncapi/kotoba-tts-asyncapi.yml#tts-publish]
+- transport: websocket
+  channel: /v2/tts/ws
+  name: tts_timeout
+  title: TTS worker-result timeout
+  envelope: {type: timeout, message: string}
+  description: >-
+    Non-fatal worker-result timeout, emitted when the synthesis worker has not
+    produced an audio chunk within the configured timeout window. The session
+    stays open.
+  fatal: false
+  remediation: Keep the session open; the server resumes streaming or escalates to a terminal frame.
+  source_operations: [asyncapi/kotoba-tts-asyncapi.yml#tts-publish]
+- transport: websocket
+  channel: /v2/tts/ws
+  name: response_done_failed
+  title: Response finished with status failed
+  envelope: {status: failed, error: {code: string, message: string}}
+  description: >-
+    The `response.done` frame carries a terminal `status` of completed,
+    cancelled, or failed; on `failed` the nested `error` object is populated.
+  fatal: true
+  source_operations: [asyncapi/kotoba-tts-asyncapi.yml#tts-publish]

@@ -1,0 +1,62 @@
+# Kotoba — the foundational voice AI model for a borderless world
+
+> Kotoba is a frontier voice AI company building a real-time speech model and simultaneous translation technology. Build with the ASR, STS, and TTS realtime APIs.
+
+# Kotoba Technologies Realtime APIs
+
+Kotoba is a frontier voice AI company. Its realtime APIs let you stream audio
+over WebSocket and receive transcription, translation, or synthesized speech.
+
+* **s2t** — Speech to Text. See `/s2t/python-sdk`, `/s2t/streaming` (live), and `/s2t/batch` (REST).
+* **s2st** — Speech to Speech Translation. See `/s2st/python-sdk` and `/s2st/streaming`.
+* **t2s** — Text to Speech. See `/t2s/python-sdk` and `/t2s/streaming`.
+
+Kotoba APIs are in private alpha — access is limited to selected customers
+(contact [kotoba\_product@kotoba.tech](mailto:kotoba_product@kotoba.tech)).
+
+Install the SDK:
+
+```bash
+pip install kotoba-sdk
+```
+
+See `/overview/introduction` for the quickstart, authentication, and audio-format reference.
+
+## Instructions for AI Agents
+
+- For clean Markdown of any page, append `.md` to the page URL
+- For section-specific indexes, append `/llms.txt` to any section URL
+- For AI client integration (Claude Code, Cursor, etc.), connect to the MCP server at https://docs.kotoba.tech/_mcp/server
+
+## Docs
+
+- [Kotoba Technologies APIs](https://docs.kotoba.tech/overview/introduction.md): Low-latency speech APIs for real-time and async applications.
+- [Authentication](https://docs.kotoba.tech/overview/authentication.md): Two ways to authenticate against the Kotoba Realtime APIs.
+- [Audio formats](https://docs.kotoba.tech/overview/audio-formats.md): Supported input and output encodings.
+- [Speech to Text](https://docs.kotoba.tech/overview/capabilities/speech-to-text.md): Stream live transcripts or transcribe finished audio files.
+- [Speech to Speech Translation](https://docs.kotoba.tech/overview/capabilities/speech-to-speech.md): Translate spoken audio into spoken audio in another language.
+- [Text to Speech](https://docs.kotoba.tech/overview/capabilities/text-to-speech.md): Synthesize natural speech from text, with streaming output.
+- [Python SDK — s2t](https://docs.kotoba.tech/s2t/python-sdk.md): Speech-to-text from Python, REST batch + WebSocket streaming.
+- [Python SDK — s2st](https://docs.kotoba.tech/s2st/python-sdk.md): Speech-to-speech translation from Python, WebSocket streaming.
+- [Python SDK — t2s](https://docs.kotoba.tech/t2s/python-sdk.md): Text-to-speech from Python, with one-shot and streaming synthesis.
+
+## API Docs
+
+- Live (WebSocket) > ASR [asr](https://docs.kotoba.tech/s2t/streaming/asr/asr.md)
+- Batch (REST) > Transcription API [Submit an audio file for asynchronous transcription.](https://docs.kotoba.tech/s2t/batch/transcription-api/submit-transcription-job-v-1-transcription-jobs-post.md)
+- Batch (REST) > Transcription API [Fetch the transcription result for a completed job.](https://docs.kotoba.tech/s2t/batch/transcription-api/get-transcription-job-v-1-transcription-jobs-job-id-get.md)
+- Live (WebSocket) > Sts [sts](https://docs.kotoba.tech/s2st/streaming/sts/sts.md)
+- Live (WebSocket) > TTS [tts](https://docs.kotoba.tech/t2s/streaming/tts/tts.md)
+
+## OpenAPI Specification
+
+The raw OpenAPI 3.1 specification for this API is available at:
+- [OpenAPI JSON](https://docs.kotoba.tech/openapi.json)
+- [OpenAPI YAML](https://docs.kotoba.tech/openapi.yaml)
+
+
+## AsyncAPI Specification
+
+The raw AsyncAPI 2.6.0 specification for the WebSocket channels is available at:
+- [AsyncAPI JSON](https://docs.kotoba.tech/asyncapi.json)
+- [AsyncAPI YAML](https://docs.kotoba.tech/asyncapi.yaml)

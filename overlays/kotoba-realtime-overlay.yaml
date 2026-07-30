@@ -1,0 +1,52 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Kotoba realtime WebSocket auth stubs
+  version: 1.0.0
+extends: openapi/kotoba-asr-realtime-openapi-original.yml
+x-generated: '2026-07-19'
+x-method: generated
+x-source: >-
+  Derived from https://docs.kotoba.tech/openapi/live-websocket.yaml and the
+  authentication docs at https://docs.kotoba.tech/overview/authentication.
+x-applies-also-to:
+- openapi/kotoba-sts-realtime-openapi-original.yml
+- openapi/kotoba-tts-realtime-openapi-original.yml
+x-note: >-
+  Kotoba's three "Live (WebSocket)" OpenAPI documents carry `paths: {}` and exist
+  only to declare the handshake security schemes; the callable surface is
+  described by the AsyncAPI 2.6.0 documents in asyncapi/. This overlay records
+  that relationship so tooling does not read the empty paths object as an absent
+  API.
+actions:
+- target: $.info
+  update:
+    title: Kotoba ASR Realtime (WebSocket) — handshake security
+    description: >-
+      Declares the authentication schemes for the Kotoba realtime speech
+      channels. The operational contract lives in the AsyncAPI documents:
+      ASR on wss://api.kotobatech.ai/v1/realtime, STS on /sts, and TTS on
+      wss://tts.api.kotobatech.ai/v2/tts/ws.
+    contact:
+      name: Kotoba Technologies
+      email: kotoba_product@kotoba.tech
+      url: https://docs.kotoba.tech/
+    x-apievangelist-transport: websocket
+    x-apievangelist-asyncapi:
+    - asyncapi/kotoba-asr-asyncapi.yml
+    - asyncapi/kotoba-sts-asyncapi.yml
+    - asyncapi/kotoba-tts-asyncapi.yml
+    x-apievangelist-conventions: conventions/kotoba-conventions.yml
+- target: $.components.securitySchemes
+  update:
+    browserClientSecret:
+      type: apiKey
+      in: header
+      name: Sec-WebSocket-Protocol
+      description: >-
+        Browser flow. Mint a short-lived client secret server-side via
+        POST https://api.kotobatech.ai/v1/realtime/transcription_sessions, then
+        open the socket with
+        `Sec-WebSocket-Protocol: realtime, kotoba-insecure-api-key.<CLIENT_SECRET>`.
+        Documented at https://docs.kotoba.tech/overview/authentication but not
+        expressed in the published spec.
+      x-apievangelist-added-by: api-evangelist-overlay

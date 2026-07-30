@@ -1,0 +1,350 @@
+asyncapi: 2.6.0
+info:
+  title: Live (WebSocket)
+  version: 1.0.0
+channels:
+  /v2/tts/ws:
+    description: |
+      Real-time text-to-speech synthesis channel.
+    publish:
+      operationId: tts-publish
+      summary: Server messages
+      message:
+        oneOf:
+          - $ref: '#/components/messages/subpackage_tts.tts-server-0-serverReceiveEvents'
+          - $ref: '#/components/messages/subpackage_tts.tts-server-1-serverReceiveEvents'
+          - $ref: '#/components/messages/subpackage_tts.tts-server-2-serverReceiveEvents'
+          - $ref: '#/components/messages/subpackage_tts.tts-server-3-serverReceiveEvents'
+          - $ref: '#/components/messages/subpackage_tts.tts-server-4-serverReceiveEvents'
+          - $ref: '#/components/messages/subpackage_tts.tts-server-5-serverReceiveEvents'
+    subscribe:
+      operationId: tts-subscribe
+      summary: Client messages
+      message:
+        oneOf:
+          - $ref: '#/components/messages/subpackage_tts.tts-client-0-clientOpenSession'
+          - $ref: '#/components/messages/subpackage_tts.tts-client-1-clientCreateResponse'
+          - $ref: '#/components/messages/subpackage_tts.tts-client-2-clientCancelResponse'
+servers:
+  production:
+    url: wss://tts.api.kotobatech.ai/
+    protocol: wss
+    x-default: true
+components:
+  messages:
+    subpackage_tts.tts-server-0-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session creation, response lifecycle markers, audio
+        chunks, and terminal status frames.
+      payload:
+        $ref: '#/components/schemas/tts_sessionCreated'
+    subpackage_tts.tts-server-1-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session creation, response lifecycle markers, audio
+        chunks, and terminal status frames.
+      payload:
+        $ref: '#/components/schemas/tts_responseCreated'
+    subpackage_tts.tts-server-2-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session creation, response lifecycle markers, audio
+        chunks, and terminal status frames.
+      payload:
+        $ref: '#/components/schemas/tts_audioChunk'
+    subpackage_tts.tts-server-3-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session creation, response lifecycle markers, audio
+        chunks, and terminal status frames.
+      payload:
+        $ref: '#/components/schemas/tts_responseDone'
+    subpackage_tts.tts-server-4-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session creation, response lifecycle markers, audio
+        chunks, and terminal status frames.
+      payload:
+        $ref: '#/components/schemas/tts_error'
+    subpackage_tts.tts-server-5-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session creation, response lifecycle markers, audio
+        chunks, and terminal status frames.
+      payload:
+        $ref: '#/components/schemas/tts_timeout'
+    subpackage_tts.tts-client-0-clientOpenSession:
+      name: clientOpenSession
+      title: clientOpenSession
+      description: |
+        First frame after the WebSocket handshake. Selects the language
+        and speaker for all responses sent on this connection.
+      payload:
+        $ref: '#/components/schemas/tts_openSession'
+    subpackage_tts.tts-client-1-clientCreateResponse:
+      name: clientCreateResponse
+      title: clientCreateResponse
+      description: |
+        Send the full text in a single frame. The server streams audio
+        chunks back until it emits `audio.chunk` with `isFinal=true`
+        followed by `response.done`. Only one response can be active at
+        a time per connection.
+      payload:
+        $ref: '#/components/schemas/tts_responseCreate'
+    subpackage_tts.tts-client-2-clientCancelResponse:
+      name: clientCancelResponse
+      title: clientCancelResponse
+      description: |
+        Aborts the currently active response. The server replies with
+        `response.done` carrying `status: "cancelled"`.
+      payload:
+        $ref: '#/components/schemas/tts_responseCancel'
+  schemas:
+    ChannelsTtsMessagesSessionCreatedType:
+      type: string
+      enum:
+        - session.created
+      title: ChannelsTtsMessagesSessionCreatedType
+    ChannelsTtsMessagesSessionCreatedFormat:
+      type: string
+      enum:
+        - pcm_f32
+      description: Audio sample format for the streamed PCM chunks.
+      title: ChannelsTtsMessagesSessionCreatedFormat
+    tts_sessionCreated:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsTtsMessagesSessionCreatedType'
+        format:
+          $ref: '#/components/schemas/ChannelsTtsMessagesSessionCreatedFormat'
+          description: Audio sample format for the streamed PCM chunks.
+        sample_rate:
+          type: integer
+        channels:
+          type: integer
+          default: 1
+        language:
+          type: string
+        speaker_id:
+          type: string
+        client_id:
+          type: string
+          description: Server-assigned session identifier.
+      required:
+        - type
+        - format
+        - sample_rate
+        - client_id
+      description: Session-ready frame from the server.
+      title: tts_sessionCreated
+    ChannelsTtsMessagesResponseCreatedType:
+      type: string
+      enum:
+        - response.created
+      title: ChannelsTtsMessagesResponseCreatedType
+    ChannelsTtsMessagesResponseCreatedResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifier for the synthesis response.
+      required:
+        - id
+      title: ChannelsTtsMessagesResponseCreatedResponse
+    tts_responseCreated:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsTtsMessagesResponseCreatedType'
+        response:
+          $ref: '#/components/schemas/ChannelsTtsMessagesResponseCreatedResponse'
+      required:
+        - type
+        - response
+      description: Server acknowledgement of a `response.create`.
+      title: tts_responseCreated
+    ChannelsTtsMessagesAudioChunkType:
+      type: string
+      enum:
+        - audio.chunk
+      title: ChannelsTtsMessagesAudioChunkType
+    tts_audioChunk:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsTtsMessagesAudioChunkType'
+        response_id:
+          type: string
+          description: ID of the response this chunk belongs to.
+        audio:
+          type: string
+          format: byte
+          description: Base64-encoded float32 PCM @ 24 kHz mono.
+        isFinal:
+          type: boolean
+          description: True on the last chunk of the response.
+      required:
+        - type
+        - audio
+        - isFinal
+      description: Streamed audio fragment.
+      title: tts_audioChunk
+    ChannelsTtsMessagesResponseDoneType:
+      type: string
+      enum:
+        - response.done
+      title: ChannelsTtsMessagesResponseDoneType
+    ChannelsTtsMessagesResponseDoneResponseStatus:
+      type: string
+      enum:
+        - completed
+        - cancelled
+        - failed
+      title: ChannelsTtsMessagesResponseDoneResponseStatus
+    ChannelsTtsMessagesResponseDoneResponseError:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      description: Populated when `status == "failed"`.
+      title: ChannelsTtsMessagesResponseDoneResponseError
+    ChannelsTtsMessagesResponseDoneResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          $ref: '#/components/schemas/ChannelsTtsMessagesResponseDoneResponseStatus'
+        error:
+          $ref: '#/components/schemas/ChannelsTtsMessagesResponseDoneResponseError'
+          description: Populated when `status == "failed"`.
+      required:
+        - id
+        - status
+      title: ChannelsTtsMessagesResponseDoneResponse
+    tts_responseDone:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsTtsMessagesResponseDoneType'
+        response:
+          $ref: '#/components/schemas/ChannelsTtsMessagesResponseDoneResponse'
+      required:
+        - type
+        - response
+      description: Terminal frame for the active response.
+      title: tts_responseDone
+    ChannelsTtsMessagesErrorType:
+      type: string
+      enum:
+        - error
+      title: ChannelsTtsMessagesErrorType
+    tts_error:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsTtsMessagesErrorType'
+        message:
+          type: string
+        code:
+          type: string
+      required:
+        - type
+        - message
+      description: Fatal server-side error.
+      title: tts_error
+    ChannelsTtsMessagesTimeoutType:
+      type: string
+      enum:
+        - timeout
+      title: ChannelsTtsMessagesTimeoutType
+    tts_timeout:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsTtsMessagesTimeoutType'
+        message:
+          type: string
+      required:
+        - type
+      description: |
+        Non-fatal worker-result timeout. The server emits this when the
+        synthesis worker has not produced an audio chunk for the
+        configured timeout window; the session stays open and the
+        server will either resume streaming or escalate to a hard
+        `error` after its retry budget is exhausted.
+      title: tts_timeout
+    ChannelsTtsMessagesOpenSessionType:
+      type: string
+      enum:
+        - open
+      title: ChannelsTtsMessagesOpenSessionType
+    tts_openSession:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsTtsMessagesOpenSessionType'
+        language:
+          type: string
+          description: 'ISO-639-1 language code. Supported: `en`, `ja`, `ko`, `zh`, `es`.'
+        speaker_id:
+          type: string
+          description: |
+            Preset voice ID. Available: `ja-man-m02-azawa` (male),
+            `ja-woman-f04-me` (female).
+        spk_ref_audio_tokens:
+          description: Optional speaker-reference audio tokens for voice cloning.
+      required:
+        - type
+      description: Session-open frame.
+      title: tts_openSession
+    ChannelsTtsMessagesResponseCreateType:
+      type: string
+      enum:
+        - response.create
+      title: ChannelsTtsMessagesResponseCreateType
+    tts_responseCreate:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsTtsMessagesResponseCreateType'
+        text:
+          type: string
+          description: Full text to synthesize. Must be non-empty.
+        response_id:
+          type: string
+          description: |
+            Optional client-supplied response identifier. If absent, the
+            server generates one and returns it in `response.created`.
+        max_length:
+          type: integer
+          description: Optional maximum length of the synthesized audio (server-defined units).
+      required:
+        - type
+        - text
+      description: One-shot synthesis request.
+      title: tts_responseCreate
+    ChannelsTtsMessagesResponseCancelType:
+      type: string
+      enum:
+        - response.cancel
+      title: ChannelsTtsMessagesResponseCancelType
+    tts_responseCancel:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsTtsMessagesResponseCancelType'
+      required:
+        - type
+      description: Cancel the currently active response.
+      title: tts_responseCancel

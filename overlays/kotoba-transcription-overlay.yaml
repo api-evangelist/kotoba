@@ -1,0 +1,61 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Kotoba Batch Transcription (REST)
+  version: 1.0.0
+extends: openapi/kotoba-transcription-openapi-original.yml
+x-generated: '2026-07-19'
+x-method: generated
+x-source: >-
+  Derived from https://docs.kotoba.tech/openapi/batch-rest.yaml plus the public
+  docs at https://docs.kotoba.tech/overview/. Captures API Evangelist
+  enhancements only; the harvested original is never mutated.
+actions:
+- target: $.info
+  update:
+    description: >-
+      Kotoba's batch transcription API. Submit an audio file and poll for the
+      result — the simpler path when sub-second latency is not required. Part of
+      the Kotoba speech platform alongside the ASR, STS and TTS realtime
+      WebSocket channels described by the AsyncAPI documents.
+    contact:
+      name: Kotoba Technologies
+      email: kotoba_product@kotoba.tech
+      url: https://docs.kotoba.tech/
+    x-apievangelist-maturity: private-alpha
+    x-apievangelist-conventions: conventions/kotoba-conventions.yml
+    x-apievangelist-errors: errors/kotoba-problem-types.yml
+    x-apievangelist-authentication: authentication/kotoba-authentication.yml
+- target: $
+  update:
+    security:
+    - bearerAuth: []
+    tags:
+    - name: transcriptionApi
+      description: >-
+        Asynchronous speech-to-text over a submit-and-poll job model. Supported
+        input languages are en, ja, ko and zh; the default is ja.
+- target: $.components.securitySchemes
+  update:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: >-
+        HTTP Bearer authentication. Pass the Kotoba API key as a Bearer token in
+        the Authorization header. Server-side use only — never embed a
+        long-lived key in browser code. The Python SDK reads KOTOBA_API_KEY from
+        the environment.
+- target: $.paths['/v1/transcription_jobs'].post
+  update:
+    description: >-
+      Submit an audio file for asynchronous transcription. Returns 202 with a
+      job_id to poll. There is no idempotency key — resubmitting the same file
+      creates a second job.
+    x-apievangelist-idempotent: false
+- target: $.paths['/v1/transcription_jobs/{job_id}'].get
+  update:
+    description: >-
+      Fetch the transcription result for a job. Always returns HTTP 200 while
+      the job exists — branch on the `state` discriminator (`done` or `error`)
+      rather than on the status code. `segments` is present only when the
+      submission set with_timestamps=true.
+    x-apievangelist-error-in-2xx: true

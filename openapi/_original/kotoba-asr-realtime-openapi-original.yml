@@ -1,0 +1,13 @@
+openapi: 3.1.0
+info:
+  title: Live (WebSocket)
+  version: 1.0.0
+paths: {}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: |
+        HTTP Bearer authentication. Pass the Kotoba API key as a Bearer
+        token via the Authorization header. Server-side use only.

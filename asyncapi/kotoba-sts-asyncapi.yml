@@ -1,0 +1,484 @@
+asyncapi: 2.6.0
+info:
+  title: Live (WebSocket)
+  version: 1.0.0
+channels:
+  /sts:
+    description: |
+      Real-time speech-to-speech translation channel.
+    publish:
+      operationId: sts-publish
+      summary: Server messages
+      message:
+        oneOf:
+          - $ref: '#/components/messages/subpackage_sts.sts-server-0-serverReceiveEvents'
+          - $ref: '#/components/messages/subpackage_sts.sts-server-1-serverReceiveEvents'
+          - $ref: '#/components/messages/subpackage_sts.sts-server-2-serverReceiveEvents'
+          - $ref: '#/components/messages/subpackage_sts.sts-server-3-serverReceiveEvents'
+          - $ref: '#/components/messages/subpackage_sts.sts-server-4-serverReceiveEvents'
+          - $ref: '#/components/messages/subpackage_sts.sts-server-5-serverReceiveEvents'
+          - $ref: '#/components/messages/subpackage_sts.sts-server-6-serverReceiveEvents'
+          - $ref: '#/components/messages/subpackage_sts.sts-server-7-serverReceiveEvents'
+    subscribe:
+      operationId: sts-subscribe
+      summary: Client messages
+      message:
+        oneOf:
+          - $ref: '#/components/messages/subpackage_sts.sts-client-0-clientSendSessionUpdate'
+          - $ref: '#/components/messages/subpackage_sts.sts-client-1-clientSendAudio'
+          - $ref: '#/components/messages/subpackage_sts.sts-client-2-clientCommitAudio'
+servers:
+  production:
+    url: wss://dummy.api.kotobatech.ai/
+    protocol: wss
+    x-default: true
+components:
+  messages:
+    subpackage_sts.sts-server-0-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session creation, text deltas, audio deltas, commit
+        completion notifications, errors, and so on.
+      payload:
+        $ref: '#/components/schemas/sts_sessionCapabilities'
+    subpackage_sts.sts-server-1-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session creation, text deltas, audio deltas, commit
+        completion notifications, errors, and so on.
+      payload:
+        $ref: '#/components/schemas/sts_voiceSessionCreated'
+    subpackage_sts.sts-server-2-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session creation, text deltas, audio deltas, commit
+        completion notifications, errors, and so on.
+      payload:
+        $ref: '#/components/schemas/sts_voiceSessionUpdated'
+    subpackage_sts.sts-server-3-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session creation, text deltas, audio deltas, commit
+        completion notifications, errors, and so on.
+      payload:
+        $ref: '#/components/schemas/sts_conversationItemCreated'
+    subpackage_sts.sts-server-4-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session creation, text deltas, audio deltas, commit
+        completion notifications, errors, and so on.
+      payload:
+        $ref: '#/components/schemas/sts_textDelta'
+    subpackage_sts.sts-server-5-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session creation, text deltas, audio deltas, commit
+        completion notifications, errors, and so on.
+      payload:
+        $ref: '#/components/schemas/sts_audioDelta'
+    subpackage_sts.sts-server-6-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session creation, text deltas, audio deltas, commit
+        completion notifications, errors, and so on.
+      payload:
+        $ref: '#/components/schemas/sts_inputAudioBufferCommitted'
+    subpackage_sts.sts-server-7-serverReceiveEvents:
+      name: serverReceiveEvents
+      title: serverReceiveEvents
+      description: |
+        Receives session creation, text deltas, audio deltas, commit
+        completion notifications, errors, and so on.
+      payload:
+        $ref: '#/components/schemas/sts_error'
+    subpackage_sts.sts-client-0-clientSendSessionUpdate:
+      name: clientSendSessionUpdate
+      title: clientSendSessionUpdate
+      description: |
+        Event that must be sent after the WebSocket connection is established
+        and before sending audio. Sets the input audio format, sampling rate,
+        source language, and target language.
+      payload:
+        $ref: '#/components/schemas/sts_voiceSessionUpdate'
+    subpackage_sts.sts-client-1-clientSendAudio:
+      name: clientSendAudio
+      title: clientSendAudio
+      description: |
+        Sends a Base64-encoded audio chunk (as a JSON frame). Alternatively,
+        PCM/Opus data can be sent directly as binary frames.
+      payload:
+        $ref: '#/components/schemas/sts_inputAudioBufferAppend'
+    subpackage_sts.sts-client-2-clientCommitAudio:
+      name: clientCommitAudio
+      title: clientCommitAudio
+      description: |
+        Sent when ending audio transmission (e.g., when the microphone is
+        turned off). The server processes all remaining audio in the buffer.
+      payload:
+        $ref: '#/components/schemas/sts_inputAudioBufferCommit'
+  schemas:
+    ChannelsStsMessagesSessionCapabilitiesType:
+      type: string
+      enum:
+        - session.capabilities
+      title: ChannelsStsMessagesSessionCapabilitiesType
+    sts_sessionCapabilities:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsStsMessagesSessionCapabilitiesType'
+        supports_binary_audio:
+          type: boolean
+          description: Whether the server supports binary audio frames
+        supports_opus_codec:
+          type: boolean
+      required:
+        - type
+        - supports_binary_audio
+        - supports_opus_codec
+      description: |
+        Server capability notification message (sent immediately after
+        connection).
+      title: sts_sessionCapabilities
+    ChannelsStsMessagesVoiceSessionCreatedType:
+      type: string
+      enum:
+        - voice_session.created
+      title: ChannelsStsMessagesVoiceSessionCreatedType
+    sts_voiceSessionCreated:
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: Server-side unique ID for identifying the event
+        type:
+          $ref: '#/components/schemas/ChannelsStsMessagesVoiceSessionCreatedType'
+      required:
+        - event_id
+        - type
+      description: STS session creation completion message
+      title: sts_voiceSessionCreated
+    ChannelsStsMessagesVoiceSessionUpdatedType:
+      type: string
+      enum:
+        - voice_session.updated
+      title: ChannelsStsMessagesVoiceSessionUpdatedType
+    InputAudioFormat:
+      type: string
+      enum:
+        - pcm16
+        - float32
+        - twilio
+        - ogg/opus
+      default: pcm16
+      description: Input audio data format
+      title: InputAudioFormat
+    VoiceSessionInputAudioTranscription:
+      type: object
+      properties:
+        language:
+          type: string
+          description: |
+            Input audio language (ISO-639-1). Supported: `en`, `ja`,
+            `ko`, `zh`, `es`. Optional, but specifying it may improve
+            transcription accuracy or latency.
+        target_language:
+          type: string
+          description: |
+            Target language for the synthesized speech (ISO-639-1).
+            Supported: `en`, `ja`, `ko`, `zh`, `es`.
+      required:
+        - target_language
+      description: Settings for audio data transcription
+      title: VoiceSessionInputAudioTranscription
+    VoiceSessionObject:
+      type: string
+      enum:
+        - realtime.voice_session
+      default: realtime.voice_session
+      description: Fixed value
+      title: VoiceSessionObject
+    VoiceSession:
+      type: object
+      properties:
+        input_audio_format:
+          $ref: '#/components/schemas/InputAudioFormat'
+          default: pcm16
+        input_audio_sample_rate:
+          type: integer
+          default: 24000
+          description: Input audio sampling rate (Hz)
+        input_audio_number_of_channels:
+          type: integer
+          default: 1
+          description: Number of input audio channels
+        input_audio_transcription:
+          $ref: '#/components/schemas/VoiceSessionInputAudioTranscription'
+        turn_detection:
+          type: boolean
+          default: false
+          description: |
+            Whether turn detection is enabled. Currently only `false` is supported.
+        delay:
+          type: integer
+          description: |
+            User-specified delay, in tokens, that the server waits before
+            emitting translated audio. Higher values give the model more
+            context (better translation quality), lower values reduce
+            latency. Omit to use the server default.
+        object:
+          $ref: '#/components/schemas/VoiceSessionObject'
+          description: Fixed value
+      required:
+        - input_audio_transcription
+        - turn_detection
+        - object
+      description: STS session settings
+      title: VoiceSession
+    sts_voiceSessionUpdated:
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: Server-side unique ID for identifying the event
+        type:
+          $ref: '#/components/schemas/ChannelsStsMessagesVoiceSessionUpdatedType'
+        session:
+          $ref: '#/components/schemas/VoiceSession'
+      required:
+        - event_id
+        - type
+        - session
+      description: STS session configuration completion message
+      title: sts_voiceSessionUpdated
+    ChannelsStsMessagesConversationItemCreatedType:
+      type: string
+      enum:
+        - conversation.item.created
+      title: ChannelsStsMessagesConversationItemCreatedType
+    sts_conversationItemCreated:
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: Unique ID issued by the server
+        type:
+          $ref: '#/components/schemas/ChannelsStsMessagesConversationItemCreatedType'
+      required:
+        - event_id
+        - type
+      description: Conversation item creation notification message
+      title: sts_conversationItemCreated
+    ChannelsStsMessagesTextDeltaType:
+      type: string
+      enum:
+        - conversation.item.input_audio_transcription.text.delta
+      title: ChannelsStsMessagesTextDeltaType
+    sts_textDelta:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsStsMessagesTextDeltaType'
+        item_id:
+          type: string
+          description: Identifier corresponding to the event_id specified in input_audio_buffer.append
+        delta:
+          type: string
+          description: A portion of the transcription result of the audio data
+      required:
+        - type
+        - delta
+      description: Partial transcription text result message
+      title: sts_textDelta
+    ChannelsStsMessagesAudioDeltaType:
+      type: string
+      enum:
+        - conversation.item.input_audio_transcription.audio.delta
+      title: ChannelsStsMessagesAudioDeltaType
+    sts_audioDelta:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsStsMessagesAudioDeltaType'
+        item_id:
+          type: string
+          description: Identifier corresponding to the event_id specified in input_audio_buffer.append
+        delta:
+          type: string
+          format: byte
+          description: Base64-encoded portion of the translated audio
+      required:
+        - type
+        - delta
+      description: Partial translated audio result message
+      title: sts_audioDelta
+    ChannelsStsMessagesInputAudioBufferCommittedType:
+      type: string
+      enum:
+        - input_audio_buffer.committed
+      title: ChannelsStsMessagesInputAudioBufferCommittedType
+    sts_inputAudioBufferCommitted:
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: Server-side unique ID for identifying the event
+        type:
+          $ref: '#/components/schemas/ChannelsStsMessagesInputAudioBufferCommittedType'
+      required:
+        - event_id
+        - type
+      description: Server-side audio processing completion notification message
+      title: sts_inputAudioBufferCommitted
+    ChannelsStsMessagesErrorType:
+      type: string
+      enum:
+        - error
+      title: ChannelsStsMessagesErrorType
+    sts_error:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsStsMessagesErrorType'
+        error:
+          type: string
+          description: Error message
+      required:
+        - type
+        - error
+      description: Error event message
+      title: sts_error
+    ChannelsStsMessagesVoiceSessionUpdateType:
+      type: string
+      enum:
+        - voice_session.update
+      description: Fixed value
+      title: ChannelsStsMessagesVoiceSessionUpdateType
+    OutputDeviceType:
+      type: string
+      enum:
+        - speaker
+        - headphones
+        - unknown
+      description: Device type
+      title: OutputDeviceType
+    OutputDevice:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Device name
+        type:
+          $ref: '#/components/schemas/OutputDeviceType'
+          description: Device type
+      description: Client playback device information
+      title: OutputDevice
+    VoiceSessionRequest:
+      type: object
+      properties:
+        input_audio_format:
+          $ref: '#/components/schemas/InputAudioFormat'
+          default: pcm16
+        input_audio_sample_rate:
+          type: integer
+          default: 24000
+          description: Input audio sampling rate (Hz)
+        input_audio_number_of_channels:
+          type: integer
+          default: 1
+          description: Number of input audio channels
+        input_audio_transcription:
+          $ref: '#/components/schemas/VoiceSessionInputAudioTranscription'
+        turn_detection:
+          type: boolean
+          default: false
+          description: |
+            Whether turn detection is enabled. Currently only `false` is supported.
+        delay:
+          type: integer
+          description: |
+            User-specified delay, in tokens, that the server waits before
+            emitting translated audio. Higher values give the model more
+            context (better translation quality), lower values reduce
+            latency. Omit to use the server default.
+      required:
+        - input_audio_transcription
+        - turn_detection
+      description: STS session settings
+      title: VoiceSessionRequest
+    sts_voiceSessionUpdate:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsStsMessagesVoiceSessionUpdateType'
+          description: Fixed value
+        client_supports_binary_audio:
+          type: boolean
+          default: false
+          description: Whether the client supports binary audio
+        client_supports_opus_codec:
+          type: boolean
+          default: false
+        output_device:
+          $ref: '#/components/schemas/OutputDevice'
+        session:
+          $ref: '#/components/schemas/VoiceSessionRequest'
+      required:
+        - type
+        - session
+      description: STS session configuration message
+      title: sts_voiceSessionUpdate
+    ChannelsStsMessagesInputAudioBufferAppendType:
+      type: string
+      enum:
+        - input_audio_buffer.append
+      description: Fixed value
+      title: ChannelsStsMessagesInputAudioBufferAppendType
+    sts_inputAudioBufferAppend:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsStsMessagesInputAudioBufferAppendType'
+          description: Fixed value
+        event_id:
+          type: string
+          description: |
+            An arbitrary string (unique recommended) used to associate with
+            the transcription result. If specified, this value is returned
+            in the response's item_id.
+        audio:
+          type: string
+          format: byte
+          description: |
+            The audio binary Base64-encoded. Must conform to the
+            input_audio_format and input_audio_sample_rate specified in
+            voice_session.update. Up to 1 MiB (about 10 seconds) can be
+            sent at once.
+      required:
+        - type
+        - audio
+      description: Audio data send message
+      title: sts_inputAudioBufferAppend
+    ChannelsStsMessagesInputAudioBufferCommitType:
+      type: string
+      enum:
+        - input_audio_buffer.commit
+      description: Fixed value
+      title: ChannelsStsMessagesInputAudioBufferCommitType
+    sts_inputAudioBufferCommit:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ChannelsStsMessagesInputAudioBufferCommitType'
+          description: Fixed value
+      required:
+        - type
+      description: Audio send completion notification message
+      title: sts_inputAudioBufferCommit

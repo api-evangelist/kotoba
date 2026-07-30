@@ -1,0 +1,14 @@
+openapi: 3.1.0
+info:
+  title: Live (WebSocket)
+  version: 1.0.0
+paths: {}
+components:
+  securitySchemes:
+    httpBasic:
+      type: http
+      scheme: basic
+      description: |
+        HTTP Basic authentication. Set device_id as the username and api_key
+        as the password. Send it via the Authorization header during the
+        WebSocket handshake.

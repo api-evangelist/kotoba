@@ -1,0 +1,45 @@
+generated: '2026-07-19'
+method: searched
+source: live probes of the Kotoba web, docs, and API hosts
+notes: >-
+  No /.well-known/ discovery documents are published on any Kotoba host. The
+  marketing site (kotoba.tech -> site.kotoba.tech) is a Framer site that serves
+  a 200 HTML catch-all for every unknown path, so a naive probe reports a false
+  200 for /.well-known/security.txt and /llms.txt; both were fetched and
+  confirmed to be the site's HTML shell, not the requested document, and are
+  recorded below as not-found. The production API host api.kotobatech.ai returns
+  503 for every path because the API is in private alpha and gated to selected
+  customers.
+hosts:
+- host: https://kotoba.tech
+  documents:
+  - {path: /.well-known/security.txt, status: 200, result: false-positive-html-catch-all, file: null}
+  - {path: /.well-known/openid-configuration, status: 200, result: false-positive-html-catch-all, file: null}
+  - {path: /.well-known/oauth-authorization-server, status: 200, result: false-positive-html-catch-all, file: null}
+  - {path: /.well-known/api-catalog, status: 200, result: false-positive-html-catch-all, file: null}
+  - {path: /.well-known/ai-plugin.json, status: 200, result: false-positive-html-catch-all, file: null}
+- host: https://docs.kotoba.tech
+  documents:
+  - {path: /.well-known/security.txt, status: 404, file: null}
+  - {path: /.well-known/openid-configuration, status: 404, file: null}
+  - {path: /.well-known/oauth-authorization-server, status: 404, file: null}
+  - {path: /.well-known/api-catalog, status: 404, file: null}
+  - {path: /.well-known/ai-plugin.json, status: 404, file: null}
+- host: https://api.kotobatech.ai
+  documents:
+  - {path: /.well-known/security.txt, status: 503, file: null}
+  - {path: /.well-known/openid-configuration, status: 503, file: null}
+  - {path: /.well-known/oauth-authorization-server, status: 503, file: null}
+  - {path: /.well-known/api-catalog, status: 503, file: null}
+  - {path: /.well-known/ai-plugin.json, status: 503, file: null}
+agent_discovery_surface:
+  notes: >-
+    Kotoba ships no /.well-known/ surface, but its Fern-hosted docs do publish a
+    real agent-discovery surface at conventional (non-well-known) paths.
+  llms_txt: https://docs.kotoba.tech/llms.txt
+  llms_full_txt: https://docs.kotoba.tech/llms-full.txt
+  markdown_pages: append `.md` to any docs page URL
+  section_indexes: append `/llms.txt` to any docs section URL
+  mcp_server: https://docs.kotoba.tech/_mcp/server
+  openapi: https://docs.kotoba.tech/openapi.yaml
+  asyncapi: https://docs.kotoba.tech/asyncapi.yaml

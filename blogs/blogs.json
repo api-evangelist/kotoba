@@ -1,0 +1,14 @@
+{
+  "repo": "kotoba",
+  "feeds": [
+    {
+      "source": "https://app.kotoba.tech/",
+      "feed_url": "https://app.kotoba.tech/",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    }
+  ],
+  "post_count": 0,
+  "fetched": "2026-07-25T15:00:33Z"
+}

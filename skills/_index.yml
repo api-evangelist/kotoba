@@ -1,0 +1,29 @@
+generated: '2026-07-19'
+method: generated
+source: >-
+  Grounded in the captured openapi/ and asyncapi/ specs plus the public docs at
+  https://docs.kotoba.tech/. Every operation id listed below was verified
+  verbatim in the referenced spec. Kotoba publishes no AGENTS.md or first-party
+  agent skills.
+skills:
+- file: kotoba-batch-transcription.md
+  name: Transcribe an audio file with Kotoba (batch REST)
+  api: openapi/kotoba-transcription-openapi-original.yml
+  operations:
+  - submit-transcription-job-v-1-transcription-jobs-post
+  - get-transcription-job-v-1-transcription-jobs-job-id-get
+- file: kotoba-live-transcription.md
+  name: Stream live speech-to-text with Kotoba ASR
+  api: asyncapi/kotoba-asr-asyncapi.yml
+  channel: /v1/realtime
+  operations: [asr-subscribe, asr-publish]
+- file: kotoba-speech-translation.md
+  name: Simultaneously translate speech with Kotoba STS
+  api: asyncapi/kotoba-sts-asyncapi.yml
+  channel: /sts
+  operations: [sts-subscribe, sts-publish]
+- file: kotoba-text-to-speech.md
+  name: Synthesize streaming speech with Kotoba TTS
+  api: asyncapi/kotoba-tts-asyncapi.yml
+  channel: /v2/tts/ws
+  operations: [tts-subscribe, tts-publish]

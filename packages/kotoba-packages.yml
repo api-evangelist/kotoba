@@ -1,0 +1,41 @@
+generated: '2026-07-19'
+method: searched
+source: https://pypi.org/project/kotoba-sdk/
+notes: >-
+  Kotoba publishes a single first-party client library, the Python SDK
+  (`kotoba-sdk`), which covers both the REST transcription-job endpoints and the
+  ASR / STS / TTS WebSocket streaming channels. The docs state that a
+  browser-side / JavaScript SDK "is not yet available"; the npm package named
+  `kotoba` is an unrelated third-party vocabulary-learning tool and is
+  deliberately NOT listed here. Registries probed with no first-party result:
+  npm, Maven Central, NuGet, pkg.go.dev, RubyGems, Packagist, crates.io.
+packages:
+- language: python
+  registry: pypi
+  name: kotoba-sdk
+  version: 0.1.1
+  url: https://pypi.org/project/kotoba-sdk/
+  install: pip install kotoba-sdk
+  requires_python: '>=3.10'
+  repository: https://github.com/kotoba-tech/kotoba-python
+  homepage: https://kotoba.tech
+  summary: >-
+    Python SDK for Kotoba Speech APIs (REST transcription jobs + WebSocket
+    streaming ASR / TTS / S2ST)
+  official: true
+  entrypoints:
+  - kotoba.KotobaClient
+  - kotoba.AsyncKotobaClient
+  docs:
+  - https://docs.kotoba.tech/s2t/python-sdk
+  - https://docs.kotoba.tech/s2st/python-sdk
+  - https://docs.kotoba.tech/t2s/python-sdk
+registries_probed:
+- {registry: pypi, result: found}
+- {registry: npm, result: none-first-party}
+- {registry: maven-central, result: none}
+- {registry: nuget, result: none}
+- {registry: pkg.go.dev, result: none}
+- {registry: rubygems, result: none}
+- {registry: packagist, result: none}
+- {registry: crates.io, result: none}

@@ -1,0 +1,58 @@
+generated: '2026-07-19'
+method: searched
+source: >-
+  https://docs.kotoba.tech/overview/introduction, https://docs.kotoba.tech/llms.txt,
+  captured openapi/ and asyncapi/ specs
+notes: >-
+  Kotoba APIs are in PRIVATE ALPHA, available to selected customers by request
+  (kotoba_product@kotoba.tech). No status page, no SLA, no changelog, no
+  deprecation policy, and no versioning policy document are published — this is
+  expected for an alpha-stage surface and is recorded as absent rather than
+  fabricated. Consequently no `StatusPage` and no `Deprecation` pointer is
+  emitted in apis.yml.
+maturity:
+  stage: private-alpha
+  access: request-only
+  access_contact: kotoba_product@kotoba.tech
+  evidence: >-
+    "Kotoba APIs are in private alpha — access is limited to selected customers"
+    (docs.kotoba.tech/llms.txt and /overview/introduction)
+versioning:
+  scheme: uri-path
+  policy_url: null
+  observed_versions:
+  - {surface: transcription-rest, version: v1, path: /v1/transcription_jobs}
+  - {surface: asr-realtime, version: v1, channel: /v1/realtime}
+  - {surface: tts-realtime, version: v2, channel: /v2/tts/ws}
+  - {surface: sts-realtime, version: unversioned, channel: /sts}
+  spec_versions:
+  - {file: openapi/kotoba-transcription-openapi-original.yml, info_version: 1.0.0}
+  - {file: asyncapi/kotoba-asr-asyncapi.yml, info_version: 1.0.0}
+  - {file: asyncapi/kotoba-sts-asyncapi.yml, info_version: 1.0.0}
+  - {file: asyncapi/kotoba-tts-asyncapi.yml, info_version: 1.0.0}
+  inconsistency: >-
+    Version discipline is uneven across the three realtime channels: ASR is
+    /v1-prefixed, TTS is /v2-prefixed, and STS carries no version segment at all.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  deprecated_operations: []
+  evidence: 'no `deprecated: true` flag in any captured spec and no policy page found'
+sla:
+  url: null
+  uptime_target: null
+status_page: null
+support:
+  email: kotoba_product@kotoba.tech
+  docs: https://docs.kotoba.tech/
+changelog: null
+observations:
+- >-
+  The STS AsyncAPI ships a placeholder production server URL,
+  `wss://dummy.api.kotobatech.ai/`, where ASR uses `wss://api.kotobatech.ai/`
+  and TTS uses `wss://tts.api.kotobatech.ai/`. This looks like an unreleased
+  placeholder left in a published spec and is worth reporting to the provider.
+- >-
+  The production host api.kotobatech.ai answers 503 to unauthenticated requests
+  on every path, consistent with the gated private alpha.

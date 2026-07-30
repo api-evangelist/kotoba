@@ -1,0 +1,14 @@
+{
+  "provider": "kotoba",
+  "sources": [
+    "kotoba-transcriptionapi-api-openapi.yml"
+  ],
+  "outputs": [
+    "kotoba-transcriptionapi-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

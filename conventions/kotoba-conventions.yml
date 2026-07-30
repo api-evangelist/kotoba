@@ -1,0 +1,108 @@
+generated: '2026-07-19'
+method: searched
+source: >-
+  https://docs.kotoba.tech/overview/authentication,
+  https://docs.kotoba.tech/overview/audio-formats,
+  https://docs.kotoba.tech/overview/introduction, captured openapi/ and asyncapi/ specs
+notes: >-
+  Cross-cutting request/response semantics for the Kotoba speech APIs. The
+  surface is dominated by long-lived JSON-over-WebSocket sessions rather than
+  REST CRUD, so several conventional REST concerns (pagination, sparse
+  fieldsets, expansion) genuinely do not apply and are recorded as such.
+authentication:
+  styles:
+  - name: bearer
+    transport: websocket-handshake, rest
+    header: 'Authorization: Bearer <api_key>'
+    recommended: true
+    audience: server-side
+    env_var: KOTOBA_API_KEY
+  - name: basic
+    transport: websocket-handshake
+    header: 'Authorization: Basic base64(device_id:api_key)'
+    audience: device
+    note: STS channel; device_id is the username, api_key the password
+  - name: client-secret-subprotocol
+    transport: websocket-handshake
+    audience: browser
+    description: >-
+      Browsers cannot set arbitrary handshake headers. Mint a short-lived client
+      secret server-side via POST https://api.kotobatech.ai/v1/realtime/transcription_sessions,
+      hand it to the browser, and pass it in the WebSocket subprotocol header.
+    header: 'Sec-WebSocket-Protocol: realtime, kotoba-insecure-api-key.<CLIENT_SECRET>'
+  guidance: Never embed long-lived API keys in browser-side code.
+  detail: authentication/kotoba-authentication.yml
+  docs: https://docs.kotoba.tech/overview/authentication
+idempotency:
+  supported: false
+  header: null
+  evidence: >-
+    No idempotency key header or parameter appears in any captured spec and none
+    is documented. POST /v1/transcription_jobs creates a new job on every call;
+    retrying a submission duplicates work. No `Idempotency` pointer is emitted.
+pagination:
+  supported: false
+  evidence: >-
+    The REST surface has no collection-listing operation (only job submit and
+    job fetch by id), so there is nothing to paginate.
+field_expansion:
+  supported: false
+sparse_fieldsets:
+  supported: false
+metadata:
+  supported: false
+request_tracing:
+  request_id_header: null
+  evidence: no request-id or correlation header documented or present in the specs
+  session_correlation: >-
+    Realtime sessions are correlated by the session object returned in the
+    `transcription_session.created` / `voice_session.created` / `session.created`
+    event at the head of each WebSocket connection.
+async_pattern:
+  style: submit-and-poll
+  submit: POST /v1/transcription_jobs -> 202 with {job_id}
+  poll: GET /v1/transcription_jobs/{job_id} -> 200 with state discriminator
+  terminal_states: [done, error]
+  note: >-
+    Failure is signalled in the 200 body via `state: error`, not by an HTTP
+    error status. Callers must branch on `state`.
+  callbacks: none — there is no webhook/callback delivery for job completion
+versioning:
+  style: uri-path
+  detail: lifecycle/kotoba-lifecycle.yml
+error_envelope:
+  rfc9457: false
+  rest_validation: {shape: 'detail[]{loc,msg,type}', status: 422}
+  realtime: {shape: 'type: error, error|message', fatal: true}
+  detail: errors/kotoba-problem-types.yml
+rate_limiting:
+  documented: false
+  headers: []
+  evidence: >-
+    No rate-limit headers, quotas, or throttling policy are documented. Access is
+    gated at the account level by the private-alpha allowlist instead.
+media_and_encoding:
+  wire_format: JSON over a single WebSocket connection per session
+  audio_encoding: Base64-encoded audio payloads inside event bodies
+  input_formats: [pcm16, float32, twilio, ogg/opus]
+  output_formats: [pcm16, float32, twilio]
+  default_sample_rate_hz: 24000
+  default_channels: 1
+  max_chunk_bytes: 1048576
+  max_chunk_note: >-
+    Each `input_audio_buffer.append` event carries up to 1 MiB (~10 seconds at
+    the default sample rate); 20-40 ms chunks are recommended for realtime.
+  batch_upload: multipart/form-data on POST /v1/transcription_jobs
+  docs: https://docs.kotoba.tech/overview/audio-formats
+languages:
+  asr: [en, ja, ko, zh]
+  sts: [en, ja, ko, zh, es]
+  tts: [en, ja, ko, zh, es]
+  code_standard: ISO-639-1
+  default: ja
+  tts_speakers: [ja-man-m02-azawa, ja-woman-f04-me]
+agent_conventions:
+  llms_txt: https://docs.kotoba.tech/llms.txt
+  markdown_pages: append `.md` to any docs page URL
+  section_indexes: append `/llms.txt` to any docs section URL
+  mcp_server: https://docs.kotoba.tech/_mcp/server

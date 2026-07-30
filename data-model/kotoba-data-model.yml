@@ -1,0 +1,86 @@
+generated: '2026-07-19'
+method: derived
+source: >-
+  openapi/kotoba-transcription-openapi-original.yml, asyncapi/kotoba-asr-asyncapi.yml,
+  asyncapi/kotoba-sts-asyncapi.yml, asyncapi/kotoba-tts-asyncapi.yml
+notes: >-
+  Derived from schema `$ref` links and id-reference fields in the captured
+  specs. Kotoba's model is session- and event-centric rather than resource
+  centric: the only persistent REST entity is the transcription job; everything
+  else is an ephemeral WebSocket session and its event stream. Kotoba publishes
+  no id-prefix scheme.
+entities:
+- name: TranscriptionJob
+  domain: transcription-rest
+  persistent: true
+  identifier: job_id
+  identifier_type: string
+  created_by: submit-transcription-job-v-1-transcription-jobs-post
+  read_by: get-transcription-job-v-1-transcription-jobs-job-id-get
+  states: [done, error]
+  state_field: state
+  fields: [job_id, state, transcription, segments, error_message]
+  source: openapi/kotoba-transcription-openapi-original.yml
+- name: Segment
+  domain: transcription-rest
+  persistent: false
+  fields: [text, start, end]
+  description: >-
+    Per-chunk timestamp aligned to the 80ms inference grid and refined with
+    silero-VAD. Present only when the submission set with_timestamps=true.
+  source: openapi/kotoba-transcription-openapi-original.yml#/components/schemas/Segment
+- name: TranscriptionSession
+  domain: asr-realtime
+  persistent: false
+  channel: /v1/realtime
+  fields: [object, input_audio_format, input_audio_transcription]
+  source: asyncapi/kotoba-asr-asyncapi.yml#/components/schemas/TranscriptionSession
+- name: VoiceSession
+  domain: sts-realtime
+  persistent: false
+  channel: /sts
+  fields: [object, input_audio_format, input_audio_transcription, output_device]
+  source: asyncapi/kotoba-sts-asyncapi.yml#/components/schemas/VoiceSession
+- name: InputAudioFormat
+  domain: shared
+  persistent: false
+  enum_values: [pcm16, float32, twilio, ogg/opus]
+  source: asyncapi/kotoba-asr-asyncapi.yml#/components/schemas/InputAudioFormat
+- name: OutputDevice
+  domain: sts-realtime
+  persistent: false
+  source: asyncapi/kotoba-sts-asyncapi.yml#/components/schemas/OutputDevice
+- name: TtsResponse
+  domain: tts-realtime
+  persistent: false
+  channel: /v2/tts/ws
+  states: [completed, cancelled, failed]
+  state_field: status
+  lifecycle_events: [response.created, audio_chunk, response.done]
+  source: asyncapi/kotoba-tts-asyncapi.yml
+relationships:
+- {from: TranscriptionJob, to: Segment, kind: has_many, via: segments, optional: true}
+- {from: TranscriptionSession, to: InputAudioFormat, kind: has_one, via: input_audio_format}
+- {from: TranscriptionSession, to: TranscriptionSessionInputAudioTranscription, kind: has_one, via: input_audio_transcription}
+- {from: VoiceSession, to: InputAudioFormat, kind: has_one, via: input_audio_format}
+- {from: VoiceSession, to: OutputDevice, kind: has_one, via: output_device}
+- {from: VoiceSession, to: VoiceSessionInputAudioTranscription, kind: has_one, via: input_audio_transcription}
+- {from: TtsResponse, to: TtsAudioChunk, kind: has_many, via: audio_chunk events}
+event_flows:
+- channel: /v1/realtime
+  domain: asr-realtime
+  client_to_server: [transcription_session.update, input_audio_buffer.append, input_audio_buffer.commit]
+  server_to_client: [transcription_session.created, transcription_session.updated, input_audio_buffer.committed, conversation.item.created, transcription.delta, transcription.completed, error]
+  source: asyncapi/kotoba-asr-asyncapi.yml
+- channel: /sts
+  domain: sts-realtime
+  client_to_server: [voice_session.update, input_audio_buffer.append, input_audio_buffer.commit]
+  server_to_client: [voice_session.created, voice_session.updated, session.capabilities, input_audio_buffer.committed, conversation.item.created, text.delta, audio.delta, error]
+  source: asyncapi/kotoba-sts-asyncapi.yml
+- channel: /v2/tts/ws
+  domain: tts-realtime
+  client_to_server: [open_session, response.create, response.cancel]
+  server_to_client: [session.created, response.created, audio_chunk, response.done, timeout, error]
+  source: asyncapi/kotoba-tts-asyncapi.yml
+id_prefixes: []
+render: null
