@@ -1,25 +1,152 @@
 aid: kotoba
 name: Kotoba
-description: Kotoba is a company surfaced as a portfolio company of kindred-ventures and added to the
-  API Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+description: >-
+  Kotoba Technologies is a Japan-founded frontier voice AI company building a
+  foundational real-time speech model and simultaneous translation technology.
+  Its developer platform exposes three JSON-over-WebSocket realtime capabilities
+  — ASR (automatic speech recognition with live transcript deltas), STS
+  (speech-to-speech translation that emits both a source transcript and
+  synthesized target-language audio over one connection), and TTS (streaming
+  text-to-speech) — alongside a REST transcription API for batch and offline
+  workflows built on a submit-and-poll job model. Supported languages span
+  English, Japanese, Korean, Chinese and Spanish. Each realtime channel is
+  described by a published AsyncAPI 2.6.0 document and each REST surface by
+  OpenAPI 3.1, with a first-party Python SDK, an llms.txt agent index, and a
+  live remote MCP documentation server. The APIs are in private alpha, available
+  to selected customers on request.
 url: https://raw.githubusercontent.com/api-evangelist/kotoba/refs/heads/main/apis.yml
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://framerusercontent.com/images/7OW09ZoQn6c3oPwAHQgP3DCXI.png
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - kindred-ventures
-x-tier: stub
-x-tier-reason: portfolio-lead
+x-tier: enriched
+x-tier-reason: openapi-asyncapi-mcp-sdk-published
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-19'
 tags:
 - Company
-apis: []
+- Artificial Intelligence
+- Machine Learning
+- Voice
+- Speech Recognition
+- Speech to Text
+- Text to Speech
+- Translation
+- Real Time
+- WebSockets
+- Audio
+- Transcription
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- aid: kotoba:kotoba-transcriptionapi-api
+  name: Kotoba transcriptionApi API
+  description: The transcriptionApi API from Kotoba — 2 operation(s) for transcriptionapi.
+  humanURL: https://docs.kotoba.tech/s2t/batch
+  baseURL: https://api.kotobatech.ai
+  tags:
+  - transcriptionApi
+  properties:
+  - type: OpenAPI
+    url: openapi/kotoba-transcriptionapi-api-openapi.yml
+  - type: Documentation
+    url: https://docs.kotoba.tech/s2t/batch
+  - type: AsyncAPI
+    url: asyncapi/kotoba-asr-asyncapi.yml
+  - type: Documentation
+    url: https://docs.kotoba.tech/overview/capabilities/speech-to-text
+  - type: AsyncAPI
+    url: asyncapi/kotoba-sts-asyncapi.yml
+  - type: Documentation
+    url: https://docs.kotoba.tech/overview/capabilities/speech-to-speech
+  - type: AsyncAPI
+    url: asyncapi/kotoba-tts-asyncapi.yml
+  - type: Documentation
+    url: https://docs.kotoba.tech/overview/capabilities/text-to-speech
 common:
 - type: Website
   url: https://kotoba.tech/
+- type: DeveloperPortal
+  url: https://docs.kotoba.tech/
+- type: Documentation
+  url: https://docs.kotoba.tech/
+- type: APIReference
+  url: https://docs.kotoba.tech/s2t/streaming/asr/asr
+- type: GettingStarted
+  url: https://docs.kotoba.tech/overview/introduction
+- type: Support
+  url: https://site.kotoba.tech/contact
+- type: SignUp
+  url: https://app.kotoba.tech/
+- type: Login
+  url: https://app.kotoba.tech/
+- type: Blog
+  url: https://site.kotoba.tech/news
+- type: TermsOfService
+  url: https://dashboard.kotobatech.ai/terms_en.html
+- type: PrivacyPolicy
+  url: https://dashboard.kotobatech.ai/privacy_en.html
+- type: GitHubOrganization
+  url: https://github.com/kotoba-tech
+- type: SourceCode
+  url: https://github.com/kotoba-tech/kotoba-python
+- type: X
+  url: https://x.com/kotoba_tech
+- type: LinkedIn
+  url: https://www.linkedin.com/company/kotoba-tech/
+- type: Authentication
+  url: authentication/kotoba-authentication.yml
+- type: OpenAPI
+  url: openapi/kotoba-transcription-openapi-original.yml
+- type: AsyncAPI
+  url: asyncapi/kotoba-asr-asyncapi.yml
+- type: Packages
+  url: packages/kotoba-packages.yml
+- type: SDKs
+  url: packages/kotoba-packages.yml
+- type: MCPServer
+  url: mcp/kotoba-mcp.yml
+- type: LLMsTxt
+  url: llms/kotoba-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml
+- type: AgenticAccess
+  url: agentic-access/kotoba-agentic-access.yml
+- type: Conventions
+  url: conventions/kotoba-conventions.yml
+- type: ErrorCatalog
+  url: errors/kotoba-problem-types.yml
+- type: DataModel
+  url: data-model/kotoba-data-model.yml
+- type: Conformance
+  url: conformance/kotoba-conformance.yml
+- type: Lifecycle
+  url: lifecycle/kotoba-lifecycle.yml
+- type: WellKnown
+  url: well-known/kotoba-well-known.yml
+- type: DomainSecurity
+  url: security/kotoba-domain-security.yml
+- type: Overlay
+  url: overlays/kotoba-transcription-overlay.yaml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence
