@@ -81,6 +81,13 @@ apis:
   - type: Documentation
     url: https://docs.kotoba.tech/overview/capabilities/text-to-speech
 common:
+- type: IssueTracker
+  url: https://github.com/kotoba-tech/kotoba-python/issues
+- type: Releases
+  url: https://github.com/kotoba-tech/kotoba-python/releases
+- type: License
+  name: MIT
+  url: https://github.com/kotoba-tech/kotoba-python/blob/main/LICENSE
 - type: Website
   url: https://kotoba.tech/
 - type: DeveloperPortal
@@ -114,7 +121,7 @@ common:
 - type: Authentication
   url: authentication/kotoba-authentication.yml
 - type: OpenAPI
-  url: openapi/kotoba-transcription-openapi-original.yml
+  url: openapi/_original/kotoba-transcription-openapi-original.yml
 - type: AsyncAPI
   url: asyncapi/kotoba-asr-asyncapi.yml
 - type: Packages
