@@ -1,0 +1,68 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Live (WebSocket) transcriptionApi API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "transcriptionApi",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Submit an audio file for asynchronous transcription.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/transcription_jobs",
+            "body": {
+              "type": "multipart-form",
+              "data": [
+                {
+                  "name": "file",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "language",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "with_timestamps",
+                  "type": "text",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "Submit an audio file for asynchronous transcription."
+        },
+        {
+          "info": {
+            "name": "Fetch the transcription result for a completed job.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/transcription_jobs/:job_id",
+            "params": [
+              {
+                "name": "job_id",
+                "value": "",
+                "type": "path",
+                "description": "The job ID returned from POST."
+              }
+            ]
+          },
+          "docs": "Fetch the transcription result for a completed job."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

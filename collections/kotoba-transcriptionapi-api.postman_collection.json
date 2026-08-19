@@ -1,0 +1,357 @@
+{
+  "item": [
+    {
+      "id": "fe5059dc-dd0e-41f8-8cca-53516cc10308",
+      "name": "transcriptionApi",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "7a5e8772-c490-4b2d-8ed2-87cf9c83f22d",
+          "name": "Submit an audio file for asynchronous transcription.",
+          "request": {
+            "name": "Submit an audio file for asynchronous transcription.",
+            "description": {},
+            "url": {
+              "path": [
+                "v1",
+                "transcription_jobs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "description": "(Required) Audio file (MP3/WAV/MP4/WebM/etc.)."
+                },
+                {
+                  "key": "language",
+                  "value": "<string,null>",
+                  "type": "text",
+                  "description": "Target language (ISO-639-1). Supported: en, ja, ko, zh. Defaults to 'ja'."
+                },
+                {
+                  "key": "with_timestamps",
+                  "value": "false",
+                  "type": "text",
+                  "description": "Include per-segment timestamps in the GET response. Adds tokenizer + silero-VAD work; disabled by default for the lighter text-only path."
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "e9ecd11c-c4dc-4923-a8a5-fea66f608852",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "transcription_jobs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "description": {
+                        "content": "(Required) Audio file (MP3/WAV/MP4/WebM/etc.).",
+                        "type": "text/plain"
+                      },
+                      "key": "file",
+                      "value": "<binary>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "Target language (ISO-639-1). Supported: en, ja, ko, zh. Defaults to 'ja'.",
+                        "type": "text/plain"
+                      },
+                      "key": "language",
+                      "value": "<string,null>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "Include per-segment timestamps in the GET response. Adds tokenizer + silero-VAD work; disabled by default for the lighter text-only path.",
+                        "type": "text/plain"
+                      },
+                      "key": "with_timestamps",
+                      "value": "false",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"job_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "38cbd391-884a-44e6-9805-2d318bfa1dc7",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "transcription_jobs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "description": {
+                        "content": "(Required) Audio file (MP3/WAV/MP4/WebM/etc.).",
+                        "type": "text/plain"
+                      },
+                      "key": "file",
+                      "value": "<binary>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "Target language (ISO-639-1). Supported: en, ja, ko, zh. Defaults to 'ja'.",
+                        "type": "text/plain"
+                      },
+                      "key": "language",
+                      "value": "<string,null>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "Include per-segment timestamps in the GET response. Adds tokenizer + silero-VAD work; disabled by default for the lighter text-only path.",
+                        "type": "text/plain"
+                      },
+                      "key": "with_timestamps",
+                      "value": "false",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4e9f1876-b37c-4e41-99a7-41dfb88b80d7",
+          "name": "Fetch the transcription result for a completed job.",
+          "request": {
+            "name": "Fetch the transcription result for a completed job.",
+            "description": {},
+            "url": {
+              "path": [
+                "v1",
+                "transcription_jobs",
+                ":job_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "job_id",
+                  "description": "(Required) The job ID returned from POST."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "574a133a-e217-4e5b-8a10-f4088d0f190e",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "transcription_jobs",
+                    ":job_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "job_id",
+                      "description": "(Required) The job ID returned from POST."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"state\": \"done\",\n  \"transcription\": \"string\",\n  \"segments\": [\n    {\n      \"text\": \"string\",\n      \"start\": 1336.314658580442,\n      \"end\": 4377.5048575266455\n    },\n    {\n      \"text\": \"string\",\n      \"start\": 4534.394804780206,\n      \"end\": 3532.5931301616765\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a8c2876c-f9c5-4554-901f-1683e0e1c6fc",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "transcription_jobs",
+                    ":job_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "job_id",
+                      "description": "(Required) The job ID returned from POST."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "93359c3d-f9f5-4880-8ae7-5fb1a282cdfe",
+    "name": "Live (WebSocket) transcriptionApi API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "",
+      "type": "text/plain"
+    }
+  }
+}

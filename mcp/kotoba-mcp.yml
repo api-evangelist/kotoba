@@ -2,16 +2,13 @@ generated: '2026-07-19'
 method: searched
 status: published
 source: https://docs.kotoba.tech/llms.txt
-notes: >-
-  Kotoba publishes a real, live, remote MCP server for its documentation,
-  advertised in llms.txt and in the header of every docs markdown page ("For AI
-  client integration (Claude Code, Cursor, etc.), connect to the MCP server at
-  https://docs.kotoba.tech/_mcp/server"). It is the Fern docs MCP server
-  (serverInfo.name = fern-docs-mcp-server, v1.0.0), so it exposes documentation
-  search only — it does NOT expose the ASR / STS / TTS / transcription
-  operations as callable tools. Verified live: an `initialize` handshake
-  returned protocolVersion 2025-06-18 with tools.listChanged, and `tools/list`
-  returned a single tool.
+notes: 'Kotoba publishes a real, live, remote MCP server for its documentation, advertised in llms.txt
+  and in the header of every docs markdown page ("For AI client integration (Claude Code, Cursor, etc.),
+  connect to the MCP server at https://docs.kotoba.tech/_mcp/server"). It is the Fern docs MCP server
+  (serverInfo.name = fern-docs-mcp-server, v1.0.0), so it exposes documentation search only — it does
+  NOT expose the ASR / STS / TTS / transcription operations as callable tools. Verified live: an `initialize`
+  handshake returned protocolVersion 2025-06-18 with tools.listChanged, and `tools/list` returned a single
+  tool.'
 server:
   name: kotoba-docs
   transport: http
@@ -27,16 +24,17 @@ capabilities:
     listChanged: true
 tools:
 - name: searchDocs
-  description: >-
-    Search the documentation at https://docs.kotoba.tech. Returns relevant doc
-    passages with source URLs.
+  description: Search the documentation at https://docs.kotoba.tech. Returns relevant doc passages with
+    source URLs.
   verified: true
-coverage_gap: >-
-  No MCP tools are published for the API surface itself. A candidate
-  API-operation tool set derivable from the captured specs would be:
-  submit-transcription-job-v-1-transcription-jobs-post,
-  get-transcription-job-v-1-transcription-jobs-job-id-get (openapi/
-  kotoba-transcription-openapi-original.yml), plus the WebSocket channels
-  asr-publish/asr-subscribe, sts-publish/sts-subscribe, tts-publish/
-  tts-subscribe (asyncapi/). These are NOT published by Kotoba and are recorded
-  here only as a gap, not as available tools.
+coverage_gap: 'No MCP tools are published for the API surface itself. A candidate API-operation tool set
+  derivable from the captured specs would be: submit-transcription-job-v-1-transcription-jobs-post, get-transcription-job-v-1-transcription-jobs-job-id-get
+  (openapi/ kotoba-transcription-openapi-original.yml), plus the WebSocket channels asr-publish/asr-subscribe,
+  sts-publish/sts-subscribe, tts-publish/ tts-subscribe (asyncapi/). These are NOT published by Kotoba
+  and are recorded here only as a gap, not as available tools.'
+deployment:
+  mode: remote
+  verified: searched
+  tools: 1
+  checked: '2026-08-12'
+  source: catalog MCP census
