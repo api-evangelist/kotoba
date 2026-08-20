@@ -40,6 +40,19 @@ modified: '2026-07-19'
 tags:
 - Company
 - Artificial Intelligence
+- Machine-Learning
+- Voice
+- Speech Recognition
+- Speech-to-Text
+- Text-to-Speech
+- Translation
+- Real-Time
+- WebSockets
+- Audio
+- Transcription
+tags_raw:
+- Company
+- Artificial Intelligence
 - Machine Learning
 - Voice
 - Speech Recognition
@@ -61,7 +74,8 @@ apis:
   description: The transcriptionApi API from Kotoba — 2 operation(s) for transcriptionapi.
   humanURL: https://docs.kotoba.tech/s2t/batch
   baseURL: https://api.kotobatech.ai
-  tags:
+  tags: []
+  tags_raw:
   - transcriptionApi
   properties:
   - type: OpenAPI
