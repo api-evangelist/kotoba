@@ -1,0 +1,29 @@
+# Front Door AI Index — kotoba — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: kotoba
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: kotoba.tech
+  final_host: site.kotoba.tech
+  ownership: own
+  owner: kotoba
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 26
+  host_score: 26
+  density: 52.21
+  words: 498
+  tiers:
+    agentic: 2
+    core: 24
+    model: 0
+  ambiguous: 4
+  top_terms:
+    AI: 22
+    AI agent: 2
+    agent: 2
+    generative ai: 2
+    smart: 2

@@ -1,7 +1,10 @@
 {
   "provider": "kotoba",
   "sources": [
-    "kotoba-transcriptionapi-api-openapi.yml"
+    "_original/kotoba-asr-realtime-openapi-original.yml",
+    "_original/kotoba-sts-realtime-openapi-original.yml",
+    "_original/kotoba-transcription-openapi-original.yml",
+    "_original/kotoba-tts-realtime-openapi-original.yml"
   ],
   "outputs": [
     "kotoba-transcriptionapi-api-openapi.yml"
@@ -9,6 +12,16 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (4 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "kotoba-asr-realtime-openapi-original.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "kotoba-sts-realtime-openapi-original.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "kotoba-transcription-openapi-original.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0; renamed 1 component key(s) illegal in 3.x (e.g. Transcription API_get_transcription_job_v1_transcription_jobs__job_id__get_Response_200)",
+    "kotoba-transcription-openapi-original.yml: declared missing tag: transcriptionApi",
+    "kotoba-tts-realtime-openapi-original.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "kotoba-transcriptionapi-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
