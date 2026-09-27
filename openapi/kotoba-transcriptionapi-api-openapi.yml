@@ -76,55 +76,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    JobIDResponse:
-      type: object
-      properties:
-        job_id:
-          type: string
-          description: The unique ID of the created job
-      required:
-      - job_id
-      title: JobIDResponse
-    Transcription_API_get_transcription_job_v1_transcription_jobs__job_id__get_Response_200:
-      oneOf:
-      - type: object
-        properties:
-          state:
-            type: string
-            enum:
-            - done
-            description: 'Discriminator value: done'
-          transcription:
-            type: string
-            description: The final transcription text.
-          segments:
-            type:
-            - array
-            - 'null'
-            items:
-              $ref: '#/components/schemas/Segment'
-            description: Per-chunk timestamps aligned to the 80ms inference grid and refined with silero-VAD. Present only when the POST request set with_timestamps=true.
-        required:
-        - state
-        - transcription
-        description: DoneResponse variant
-      - type: object
-        properties:
-          state:
-            type: string
-            enum:
-            - error
-            description: 'Discriminator value: error'
-          error_message:
-            type: string
-            description: Details about the error.
-        required:
-        - state
-        - error_message
-        description: ErrorResponse variant
-      discriminator:
-        propertyName: state
-      title: Transcription API_get_transcription_job_v1_transcription_jobs__job_id__get_Response_200
     HTTPValidationError:
       type: object
       properties:
@@ -167,8 +118,57 @@ components:
       - msg
       - type
       title: ValidationError
+    Transcription_API_get_transcription_job_v1_transcription_jobs__job_id__get_Response_200:
+      oneOf:
+      - type: object
+        properties:
+          state:
+            type: string
+            enum:
+            - done
+            description: 'Discriminator value: done'
+          transcription:
+            type: string
+            description: The final transcription text.
+          segments:
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/Segment'
+            description: Per-chunk timestamps aligned to the 80ms inference grid and refined with silero-VAD. Present only when the POST request set with_timestamps=true.
+        required:
+        - state
+        - transcription
+        description: DoneResponse variant
+      - type: object
+        properties:
+          state:
+            type: string
+            enum:
+            - error
+            description: 'Discriminator value: error'
+          error_message:
+            type: string
+            description: Details about the error.
+        required:
+        - state
+        - error_message
+        description: ErrorResponse variant
+      discriminator:
+        propertyName: state
+      title: Transcription API_get_transcription_job_v1_transcription_jobs__job_id__get_Response_200
     ValidationErrorLocItems:
       oneOf:
       - type: string
       - type: integer
       title: ValidationErrorLocItems
+    JobIDResponse:
+      type: object
+      properties:
+        job_id:
+          type: string
+          description: The unique ID of the created job
+      required:
+      - job_id
+      title: JobIDResponse

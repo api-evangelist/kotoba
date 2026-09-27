@@ -55,7 +55,7 @@ modified: '2026-07-19'
 tags:
 - Company
 - Artificial Intelligence
-- Machine-Learning
+- Machine Learning
 - Voice
 - Speech Recognition
 - Speech-to-Text
@@ -78,6 +78,7 @@ tags_raw:
 - WebSockets
 - Audio
 - Transcription
+- Machine-Learning
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -85,7 +86,7 @@ maintainers:
   email: info@apis.io
 apis:
 - aid: kotoba:kotoba-transcriptionapi-api
-  name: Kotoba transcriptionApi API
+  name: Kotoba Transcription API
   description: The transcriptionApi API from Kotoba — 2 operation(s) for transcriptionapi.
   humanURL: https://docs.kotoba.tech/s2t/batch
   baseURL: https://api.kotobatech.ai
