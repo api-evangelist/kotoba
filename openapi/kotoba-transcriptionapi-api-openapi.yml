@@ -76,11 +76,62 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    JobIDResponse:
+      type: object
+      properties:
+        job_id:
+          type: string
+          description: The unique ID of the created job
+      required:
+      - job_id
+      title: JobIDResponse
+    Segment:
+      type: object
+      properties:
+        text:
+          type: string
+        start:
+          type: number
+          format: double
+          description: Segment start time in seconds.
+        end:
+          type: number
+          format: double
+          description: Segment end time in seconds.
+      required:
+      - text
+      - start
+      - end
+      title: Segment
+    HTTPValidationError:
+      type: object
+      properties:
+        detail:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      title: HTTPValidationError
     ValidationErrorLocItems:
       oneOf:
       - type: string
       - type: integer
       title: ValidationErrorLocItems
+    ValidationError:
+      type: object
+      properties:
+        loc:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationErrorLocItems'
+        msg:
+          type: string
+        type:
+          type: string
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     Transcription_API_get_transcription_job_v1_transcription_jobs__job_id__get_Response_200:
       oneOf:
       - type: object
@@ -121,54 +172,3 @@ components:
       discriminator:
         propertyName: state
       title: Transcription API_get_transcription_job_v1_transcription_jobs__job_id__get_Response_200
-    ValidationError:
-      type: object
-      properties:
-        loc:
-          type: array
-          items:
-            $ref: '#/components/schemas/ValidationErrorLocItems'
-        msg:
-          type: string
-        type:
-          type: string
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    HTTPValidationError:
-      type: object
-      properties:
-        detail:
-          type: array
-          items:
-            $ref: '#/components/schemas/ValidationError'
-      title: HTTPValidationError
-    Segment:
-      type: object
-      properties:
-        text:
-          type: string
-        start:
-          type: number
-          format: double
-          description: Segment start time in seconds.
-        end:
-          type: number
-          format: double
-          description: Segment end time in seconds.
-      required:
-      - text
-      - start
-      - end
-      title: Segment
-    JobIDResponse:
-      type: object
-      properties:
-        job_id:
-          type: string
-          description: The unique ID of the created job
-      required:
-      - job_id
-      title: JobIDResponse
