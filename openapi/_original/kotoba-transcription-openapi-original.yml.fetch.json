@@ -1,0 +1,12 @@
+{
+ "url": "https://docs.kotoba.tech/openapi.json",
+ "requested_url": "https://docs.kotoba.tech/openapi.json",
+ "status": 200,
+ "content_type": "application/json; charset=utf-8",
+ "bytes": 3998,
+ "sha256": "71d2ce7bfbecd55842d9ab71443f02cf5c21ec306fe7ab97a77bdb75e1c4ac37",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "equivalent",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the provider's current document describes the same operations (Jaccard 1.0), but the bytes differ, so the archive is an earlier or reformatted copy."
+}
